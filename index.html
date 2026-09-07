@@ -1,0 +1,874 @@
+<title>Future Links</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap">
+<style id="app-style">
+  :root {
+    --blue-deep: #0A3255;
+    --blue-panel: #0D3D64;
+    --blue-panel-2: #0F4570;
+    --line: rgba(224,238,252,0.62);
+    --line-soft: rgba(224,238,252,0.30);
+    --line-dim: rgba(224,238,252,0.12);
+    --grid-major: rgba(224,238,252,0.10);
+    --grid-minor: rgba(224,238,252,0.045);
+    --ink: #E9F2FC;
+    --ink-soft: rgba(233,242,252,0.72);
+    --ink-faint: rgba(233,242,252,0.46);
+    --accent: #FF6B4A;
+    --accent-ink: #2A0C04;
+    --accent-tint: rgba(255,107,74,0.20);
+    --danger: #FF8A73;
+    --radius: 2px;
+  }
+  * { box-sizing: border-box; }
+  html { color-scheme: dark; }
+  body {
+    margin: 0;
+    background-color: var(--blue-deep);
+    background-image:
+      repeating-linear-gradient(0deg, var(--grid-major) 0 1px, transparent 1px 120px),
+      repeating-linear-gradient(90deg, var(--grid-major) 0 1px, transparent 1px 120px),
+      repeating-linear-gradient(0deg, var(--grid-minor) 0 1px, transparent 1px 24px),
+      repeating-linear-gradient(90deg, var(--grid-minor) 0 1px, transparent 1px 24px);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+    font-size: 14.5px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--ink); }
+  .stencil { font-family: "Space Mono", "IBM Plex Mono", monospace; }
+  .caps { text-transform: uppercase; letter-spacing: 0.09em; }
+
+  .ruler-top, .ruler-left {
+    position: fixed;
+    background: var(--blue-deep);
+    z-index: 5;
+    pointer-events: none;
+  }
+  .ruler-top {
+    top: 0; left: 0; right: 0; height: 15px;
+    border-bottom: 1px solid var(--line-soft);
+    background-image: repeating-linear-gradient(90deg, var(--line-soft) 0 1px, transparent 1px 20px);
+    background-position: bottom left;
+    background-repeat: repeat-x;
+    background-size: 20px 7px;
+  }
+  .ruler-left {
+    top: 0; left: 0; bottom: 0; width: 15px;
+    border-right: 1px solid var(--line-soft);
+    background-image: repeating-linear-gradient(0deg, var(--line-soft) 0 1px, transparent 1px 20px);
+    background-position: top right;
+    background-repeat: repeat-y;
+    background-size: 7px 20px;
+  }
+  @media (max-width: 700px) {
+    .ruler-top, .ruler-left { display: none; }
+  }
+
+  .sheet {
+    position: relative;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 120px;
+  }
+  @media (min-width: 701px) {
+    .sheet { padding-left: 40px; padding-top: 40px; }
+  }
+  .reg { position: absolute; width: 16px; height: 16px; color: var(--line-soft); pointer-events: none; font-size: 15px; line-height: 1; }
+  .reg::before { content: "+"; }
+  .reg-tl { top: 6px; left: 6px; }
+  .reg-tr { top: 6px; right: 6px; }
+  .reg-bl { bottom: 6px; left: 6px; }
+  .reg-br { bottom: 6px; right: 6px; }
+  @media (max-width: 700px) { .reg { display: none; } }
+
+  .frame {
+    position: relative;
+    border: 1px solid var(--line-soft);
+    background: var(--blue-panel);
+  }
+  .frame::before, .frame::after { content: ""; position: absolute; width: 9px; height: 9px; pointer-events: none; }
+  .frame::before { top: -1px; left: -1px; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .frame::after { bottom: -1px; right: -1px; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 16px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .kicker { font-size: 11px; color: var(--accent); margin: 0 0 6px; }
+  .brand {
+    font-family: "Space Mono", monospace;
+    font-weight: 700;
+    font-size: clamp(30px, 5.4vw, 44px);
+    letter-spacing: 0.02em;
+    margin: 0;
+    color: var(--ink);
+  }
+  .tagline { margin: 8px 0 0; color: var(--ink-soft); font-size: 13px; max-width: 52ch; }
+  .readout { text-align: right; font-size: 11.5px; color: var(--ink-faint); }
+  .readout b { color: var(--ink-soft); font-weight: 600; }
+
+  .manage-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 9px 14px;
+    border: 1px solid var(--line-soft);
+    background: transparent;
+    color: var(--ink-soft);
+    font: inherit; font-size: 12px;
+    cursor: pointer;
+  }
+  .manage-btn.is-on { background: var(--accent-tint); border-color: var(--accent); color: var(--ink); }
+  .manage-btn:hover { border-color: var(--line); color: var(--ink); }
+
+  .field-label { font-size: 10.5px; color: var(--accent); margin: 0 0 6px; }
+  .searchwrap { padding: 14px; margin-bottom: 18px; }
+  .search-input {
+    width: 100%;
+    font: inherit; font-size: 16px;
+    padding: 4px 0;
+    border: none; border-bottom: 1px solid var(--line-soft);
+    background: transparent;
+    color: var(--ink);
+  }
+  .search-input::placeholder { color: var(--ink-faint); }
+  .search-input:focus-visible { outline: none; border-bottom-color: var(--accent); }
+
+  .meta-row {
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+    font-size: 11.5px; color: var(--ink-faint);
+    margin: 0 0 18px;
+  }
+  .clear-link { color: var(--accent); cursor: pointer; background: none; border: none; font: inherit; padding: 0; }
+
+  .legend { padding: 14px; margin-bottom: 26px; }
+  .tagshelf { display: flex; flex-wrap: wrap; gap: 7px; }
+  .tag-pill {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11.5px;
+    padding: 5px 9px;
+    border: 1px solid var(--line-dim);
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .tag-pill::before { content: "["; color: var(--ink-faint); margin-right: 3px; }
+  .tag-pill::after { content: "]"; color: var(--ink-faint); margin-left: 3px; }
+  .tag-pill .n { color: var(--ink-faint); }
+  .tag-pill.is-active { background: var(--accent-tint); border-color: var(--accent); color: var(--ink); }
+  .tag-pill.is-dim { opacity: 0.42; }
+  .tag-pill:hover { border-color: var(--line); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+  .card { padding: 15px 15px 13px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .card-eyebrow { font-size: 10.5px; color: var(--accent); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card-actions { display: flex; gap: 4px; flex: none; }
+  .icon-btn {
+    border: 1px solid var(--line-dim); background: transparent; color: var(--ink-faint);
+    width: 24px; height: 24px; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 12px; line-height: 1;
+  }
+  .icon-btn:hover { color: var(--ink); border-color: var(--line); }
+  .icon-btn.danger:hover { color: var(--danger); border-color: var(--danger); }
+
+  .card-title { font-weight: 700; font-size: 15.5px; color: var(--ink); text-decoration: none; line-height: 1.35; }
+  .card-title:hover { color: var(--accent); text-decoration: underline; }
+  .card-note { color: var(--ink-soft); font-size: 12.5px; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+  .card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
+  .card-tag {
+    font-size: 10px; padding: 2px 6px;
+    background: transparent; color: var(--ink-faint);
+    border: 1px solid var(--line-dim); cursor: pointer;
+  }
+  .card-tag:hover { border-color: var(--accent); color: var(--ink); }
+
+  .card-foot { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--ink-faint); margin-top: 2px; }
+
+  .related { margin-top: 4px; padding-top: 9px; border-top: 1px dashed var(--line-dim); }
+  .related-label { font-size: 9.5px; color: var(--ink-faint); margin: 0 0 5px; }
+  .related-item {
+    display: flex; align-items: baseline; gap: 6px;
+    font-size: 11.5px; color: var(--ink-soft);
+    background: none; border: none; font-family: inherit; padding: 2px 0; cursor: pointer; text-align: left; width: 100%;
+  }
+  .related-item::before { content: "⌐"; color: var(--line); flex: none; }
+  .related-item:hover { color: var(--accent); }
+  .related-item .rt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .empty-state { grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: var(--ink-faint); border: 1px dashed var(--line-dim); }
+
+  .archive-prompt { grid-column: 1 / -1; text-align: center; padding: 26px 20px; }
+  .archive-link {
+    font-family: "IBM Plex Mono", monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+    background: none; color: var(--ink-faint); border: 1px solid var(--line-dim);
+    padding: 7px 12px; cursor: pointer;
+  }
+  .archive-link:hover { color: var(--ink-soft); border-color: var(--line); }
+
+  .form-panel { padding: 18px; margin-bottom: 24px; }
+  .form-panel h2 { font-family: "Space Mono", monospace; font-weight: 700; font-size: 15px; margin: 0 0 14px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 4px; }
+  .form-field { display: flex; flex-direction: column; gap: 5px; }
+  .form-field.span2 { grid-column: 1 / -1; }
+  .form-field label { font-size: 10.5px; color: var(--accent); }
+  .form-field input, .form-field textarea {
+    font: inherit; font-size: 13.5px; padding: 8px 0;
+    border: none; border-bottom: 1px solid var(--line-dim);
+    background: transparent; color: var(--ink); resize: vertical;
+  }
+  .form-field input:focus-visible, .form-field textarea:focus-visible { outline: none; border-bottom-color: var(--accent); }
+  .tagpicker { display: flex; flex-wrap: wrap; gap: 6px; max-height: 140px; overflow-y: auto; padding: 10px; border: 1px solid var(--line-dim); }
+  .newtag-row { display: flex; gap: 8px; margin-top: 10px; }
+  .newtag-row input { flex: 1; border: 1px solid var(--line-dim); padding: 8px 9px; }
+  .btn {
+    font: inherit; font-size: 11.5px; letter-spacing: 0.05em;
+    padding: 9px 14px; border: 1px solid var(--line-soft);
+    background: transparent; color: var(--ink); cursor: pointer;
+  }
+  .btn:hover { border-color: var(--line); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 700; }
+  .btn.primary:hover { background: #ff8264; border-color: #ff8264; }
+  .form-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+  .titleblock {
+    margin-top: 40px;
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 6px 24px;
+    font-size: 11px;
+  }
+  .titleblock .tb-name { font-family: "Space Mono", monospace; font-weight: 700; font-size: 14px; grid-column: 1 / -1; }
+  .tb-row { display: flex; justify-content: space-between; gap: 10px; color: var(--ink-faint); border-top: 1px solid var(--line-dim); padding-top: 6px; }
+  .tb-row b { color: var(--ink-soft); font-weight: 600; }
+  .tb-row.status-live b { color: #7BD88F; }
+  .tb-row.status-ro b { color: var(--accent); }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%);
+    background: var(--blue-panel-2); border: 1px solid var(--line);
+    color: var(--ink); padding: 9px 16px;
+    font-size: 12.5px; z-index: 40;
+  }
+  .toast.error { border-color: var(--danger); color: var(--danger); }
+
+  @media (max-width: 560px) {
+    .header { align-items: flex-start; }
+    .readout { text-align: left; }
+    .form-grid { grid-template-columns: 1fr; }
+    .titleblock { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+  .site-credit { text-align: center; font-size: 11px; color: var(--ink-faint); padding: 22px 20px 4px; }
+  .site-credit a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid transparent; }
+  .site-credit a:hover { color: var(--ink); border-bottom-color: currentColor; }
+  .site-credit .credit-sep { margin: 0 8px; opacity: 0.6; }
+
+  .creator-tag {
+    position: fixed; top: 24px; right: 16px; z-index: 150;
+    font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 11px; letter-spacing: 0.05em;
+    background: var(--accent); color: var(--accent-ink); border: none;
+    padding: 8px 14px; cursor: pointer;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+    transition: transform .15s ease;
+  }
+  .creator-tag:hover { transform: translateY(-2px); }
+  .creator-panel {
+    position: fixed; top: 62px; right: 16px; z-index: 150; width: 236px;
+    background: var(--blue-panel-2); border: 1px solid var(--line);
+    padding: 22px 18px 18px;
+    transform-origin: top right;
+    transform: scale(0.94) translateY(-8px); opacity: 0; pointer-events: none;
+    transition: transform .25s cubic-bezier(.22,1,.36,1), opacity .2s ease-out;
+  }
+  .creator-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: auto; }
+  .creator-panel-close {
+    position: absolute; top: 8px; right: 10px; background: none; border: none;
+    font-size: 16px; line-height: 1; color: var(--ink-faint); cursor: pointer; padding: 4px 6px;
+  }
+  .creator-panel-close:hover { color: var(--ink); }
+  .creator-avatar {
+    width: 52px; height: 52px; border-radius: 50%; margin: 0 auto 12px;
+    background: var(--accent); color: var(--accent-ink);
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Space Mono", monospace; font-weight: 700; font-size: 15px;
+  }
+  .creator-name { font-family: "Space Mono", monospace; font-weight: 700; font-size: 14px; text-align: center; }
+  .creator-title { color: var(--ink-faint); font-size: 10.5px; text-align: center; margin-top: 3px; }
+  .creator-blurb { font-size: 12px; text-align: center; line-height: 1.5; margin-top: 12px; color: var(--ink-soft); }
+  .creator-links { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+  .creator-link-btn {
+    background: var(--accent); color: var(--accent-ink); text-align: center; font-weight: 700; font-size: 11.5px;
+    padding: 9px; text-decoration: none;
+  }
+  .creator-link-btn:hover { background: #ff8264; }
+  .creator-social-row { display: flex; justify-content: center; gap: 9px; margin-top: 2px; }
+  .creator-social {
+    display: flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%; flex: none;
+    color: var(--ink-soft); border: 1px solid var(--line-soft);
+    transition: color .15s ease, border-color .15s ease, background .15s ease;
+  }
+  .creator-social:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-tint); }
+  .creator-social svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  @media (max-width: 560px) {
+    .creator-tag { top: 20px; right: 10px; font-size: 10px; padding: 7px 11px; }
+    .creator-panel { right: 10px; left: 10px; width: auto; top: 56px; }
+  }
+
+  .gate { position: fixed; inset: 0; background: rgba(6,20,34,0.72); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .gate-box { width: 100%; max-width: 300px; padding: 20px; }
+  .gate-box input {
+    width: 100%; font: inherit; font-size: 14px; padding: 9px 10px;
+    border: 1px solid var(--line-dim); background: var(--blue-panel); color: var(--ink); margin-top: 4px;
+  }
+  .gate-box input:focus-visible { outline: none; border-color: var(--accent); }
+  .gate-error { color: var(--danger); font-size: 11.5px; margin: 8px 0 0; }
+  .gate-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+</style>
+<div class="ruler-top"></div>
+<div class="ruler-left"></div>
+<div id="app"></div>
+<div id="toast" class="toast" hidden></div>
+<button type="button" id="creatorTagBtn" class="creator-tag" aria-expanded="false" aria-controls="creatorPanel">About the creator</button>
+<div class="creator-panel" id="creatorPanel" aria-hidden="true">
+  <button type="button" class="creator-panel-close" id="creatorPanelClose" aria-label="Close">&times;</button>
+  <div class="creator-avatar">JA</div>
+  <div class="creator-name">Jack Abraham</div>
+  <div class="creator-title">Music Consultant, Educator &amp; Mentor</div>
+  <p class="creator-blurb">If you're enjoying this tool, drop me a line.</p>
+  <div class="creator-links">
+    <a class="creator-link-btn" href="mailto:jack@jackabraham.studio">Email me</a>
+    <div class="creator-social-row">
+      <a class="creator-social" href="https://www.linkedin.com/in/jackcabraham/" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+      </a>
+      <a class="creator-social" href="https://github.com/Jackalackalack" target="_blank" rel="noopener" aria-label="GitHub">
+        <svg viewBox="0 0 24 24"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"></path></svg>
+      </a>
+      <a class="creator-social" href="https://jackabraham.studio" target="_blank" rel="noopener" aria-label="Website">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+      </a>
+      <a class="creator-social" href="https://www.instagram.com/jackalackalack/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg>
+      </a>
+    </div>
+  </div>
+</div>
+<div id="gate" class="gate" hidden>
+  <div class="gate-box frame">
+    <p class="field-label caps">owner passphrase</p>
+    <input id="gate-input" type="password" placeholder="Enter passphrase" autocomplete="off">
+    <p id="gate-error" class="gate-error" hidden>Incorrect passphrase.</p>
+    <div class="gate-actions">
+      <button type="button" class="btn" id="gate-cancel">Cancel</button>
+      <button type="button" class="btn primary" id="gate-ok">Unlock</button>
+    </div>
+  </div>
+</div>
+<script>
+/*STATE_START*/
+let STATE = {"rev":3,"tags":["AI","Africa","America","AR","Artists","Asia","Australia","ChatGPT","Claude","Clubs","Copyright","Creative Production","Creators","Crypto","Culture","Dance","Distributors","DSPs","Emerging Technology","Europe","Global Heating","Grassroots Music Venues","India","Independent Record Labels","Jazz","K-Pop","Metal","Music Venues","NFTs","Nightlife","Platforms","Publishing","Record Labels","Regulation","Rest of the World","Rock","Songwriters","South America","Spotify","Stadiums","Staging","Streaming","Sustainability","Ticketing","UK","VR"],"links":[{"id":"lmtrbb81h2th7","url":"https://thequietus.com/opinion-and-essays/black-sky-thinking/nightclub-closures-music-venues/","title":"Why Reports of the Death of UK Nightlife are Greatly Exaggerated","note":"Nobody denies that UK nightlife faces colossal and often existential challenges, particularly across underground and non-corporate spaces. But behind the scenes there’s growing frustration with the relentlessly downbeat tone in which much of that debate has been conducted, and concerns about the long-term effects of portraying late-night culture as a lost cause.","tags":["Nightlife","Clubs","Culture","Grassroots Music Venues","Music Venues"],"added":"2026-09-07"},{"id":"seed-1","url":"https://www.musicbusinessworldwide.com/","title":"Music Business Worldwide","note":"Daily news and analysis on the recorded-music business.","tags":["Record Labels","Regulation","Streaming","Culture"],"added":"2026-09-07"},{"id":"seed-2","url":"https://www.ifpi.org/","title":"IFPI","note":"Global trade body representing the recorded music industry.","tags":["Record Labels","Regulation","Culture"],"added":"2026-09-07"},{"id":"seed-3","url":"https://artists.spotify.com/","title":"Spotify for Artists","note":"Spotify's hub for artists — stats, playlisting and release tools.","tags":["Spotify","DSPs","Streaming","Platforms"],"added":"2026-09-07"},{"id":"seed-4","url":"https://www.ukmusic.org/","title":"UK Music","note":"UK recorded music industry's trade and lobbying body.","tags":["UK","Regulation","Songwriters","Creators"],"added":"2026-09-07"},{"id":"seed-5","url":"https://musically.com/","title":"Music Ally","note":"Music-tech and streaming industry news.","tags":["Streaming","Platforms","Emerging Technology","Culture"],"added":"2026-09-07"},{"id":"seed-6","url":"https://www.riaa.com/","title":"RIAA","note":"US recording industry trade association.","tags":["Copyright","Record Labels","America","Regulation"],"added":"2026-09-07"}]};
+/*STATE_END*/
+
+const __SRC__ = document.currentScript.textContent;
+const FONT_HREF = "https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap";
+
+const PASSPHRASE = "badjazz1929";
+let UNLOCKED = false;
+try { UNLOCKED = localStorage.getItem("crateUnlocked") === "1"; } catch (e) {}
+
+let READ_ONLY = false;
+let STATIC_MIRROR = false;
+let _apiPromise = null;
+function getArtifactApi() {
+  if (!_apiPromise) {
+    _apiPromise = (window.claude && typeof window.claude.use === "function")
+      ? window.claude.use("artifact").catch(() => null)
+      : Promise.resolve(null);
+  }
+  return _apiPromise;
+}
+getArtifactApi().then(function (api) { if (!api) STATIC_MIRROR = true; });
+
+const UI = { query: "", activeTags: new Set(), manage: false, formMode: null, editingId: null, formTagSel: new Set(), formDraft: { url: "", title: "", note: "" }, showArchive: false };
+
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
+}
+function domainOf(url) {
+  try { return new URL(url).hostname.replace(/^www\./, ""); } catch (e) { return url; }
+}
+function pad2(n) { return String(n).length < 2 ? "0" + n : String(n); }
+function sectorCodes(state) {
+  const map = {};
+  state.links.forEach(function (l, i) { map[l.id] = "SEC-" + pad2(i + 1); });
+  return map;
+}
+function todayStamp() {
+  const d = new Date();
+  return d.getFullYear() + "." + pad2(d.getMonth() + 1) + "." + pad2(d.getDate());
+}
+function tagCounts(state) {
+  const counts = {};
+  state.tags.forEach(function (t) { counts[t] = 0; });
+  state.links.forEach(function (l) { l.tags.forEach(function (t) { counts[t] = (counts[t] || 0) + 1; }); });
+  return counts;
+}
+function filteredLinks(state, ui) {
+  const terms = ui.query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const active = ui.activeTags;
+  return state.links.filter(function (l) {
+    if (active.size) {
+      const hit = l.tags.some(function (t) { return active.has(t); });
+      if (!hit) return false;
+    }
+    if (!terms.length) return true;
+    const hay = (l.title + " " + l.url + " " + (l.note || "") + " " + l.tags.join(" ")).toLowerCase();
+    return terms.every(function (term) { return hay.indexOf(term) !== -1; });
+  }).slice().sort(function (a, b) {
+    return (b.added || "").localeCompare(a.added || "") || a.title.localeCompare(b.title);
+  });
+}
+function relatedLinks(link, allLinks, limit) {
+  return allLinks
+    .filter(function (o) { return o.id !== link.id; })
+    .map(function (o) {
+      const shared = o.tags.filter(function (t) { return link.tags.indexOf(t) !== -1; }).length;
+      return { link: o, shared: shared };
+    })
+    .filter(function (x) { return x.shared > 0; })
+    .sort(function (a, b) { return b.shared - a.shared || b.link.added.localeCompare(a.link.added); })
+    .slice(0, limit)
+    .map(function (x) { return x.link; });
+}
+
+function renderTagShelf(state, ui) {
+  const counts = tagCounts(state);
+  return state.tags.slice().sort(function (a, b) { return a.localeCompare(b); }).map(function (t) {
+    const active = ui.activeTags.has(t);
+    const n = counts[t] || 0;
+    const dim = n === 0 && !active ? " is-dim" : "";
+    return '<button type="button" class="tag-pill' + (active ? " is-active" : "") + dim + '" data-tag="' + esc(t) + '">'
+      + esc(t) + ' <span class="n">' + n + "</span></button>";
+  }).join("");
+}
+
+function renderCard(l, ui, codes, allLinks) {
+  const manageBtns = ui.manage
+    ? '<div class="card-actions">'
+      + '<button type="button" class="icon-btn" data-edit="' + esc(l.id) + '" title="Edit" aria-label="Edit link">✎</button>'
+      + '<button type="button" class="icon-btn danger" data-delete="' + esc(l.id) + '" title="Delete" aria-label="Delete link">✕</button>'
+      + "</div>"
+    : "";
+  const tagsHtml = l.tags.map(function (t) {
+    return '<button type="button" class="card-tag" data-tag="' + esc(t) + '">' + esc(t) + "</button>";
+  }).join("");
+  const rel = relatedLinks(l, allLinks, 3);
+  const relatedHtml = rel.length
+    ? '<div class="related"><p class="related-label caps">connected sheets</p>'
+      + rel.map(function (r) {
+          return '<button type="button" class="related-item" data-jumpto="' + esc(r.id) + '"><span class="rt">' + esc(r.title) + "</span></button>";
+        }).join("")
+      + "</div>"
+    : "";
+  return '<article class="card frame">'
+    + '<div class="card-top"><span class="card-eyebrow">' + esc(codes[l.id] || "") + " · " + esc(domainOf(l.url)) + "</span>" + manageBtns + "</div>"
+    + '<a class="card-title" href="' + esc(l.url) + '" target="_blank" rel="noopener noreferrer">' + esc(l.title) + "</a>"
+    + (l.note ? '<p class="card-note">' + esc(l.note) + "</p>" : "")
+    + '<div class="card-tags">' + tagsHtml + "</div>"
+    + '<div class="card-foot"><span>ADDED ' + esc(l.added || "") + "</span></div>"
+    + relatedHtml
+    + "</article>";
+}
+
+function renderForm(state, ui) {
+  const editing = ui.formMode === "edit" ? state.links.find(function (l) { return l.id === ui.editingId; }) : null;
+  const heading = editing ? "EDIT SUBMISSION — " + esc(editing.title) : "NEW SUBMISSION";
+  const urlVal = esc(ui.formDraft.url);
+  const titleVal = esc(ui.formDraft.title);
+  const noteVal = esc(ui.formDraft.note);
+  const allTags = state.tags.slice().sort(function (a, b) { return a.localeCompare(b); });
+  const pickerHtml = allTags.map(function (t) {
+    const on = ui.formTagSel.has(t);
+    return '<button type="button" class="tag-pill' + (on ? " is-active" : "") + '" data-formtag="' + esc(t) + '">' + esc(t) + "</button>";
+  }).join("");
+  return '<div class="form-panel frame"><h2 class="caps">' + heading + '</h2>'
+    + '<div class="form-grid">'
+    + '<div class="form-field span2"><label class="caps">Link URL</label><input id="f-url" type="text" placeholder="https://example.com/article" value="' + urlVal + '"></div>'
+    + '<div class="form-field span2"><label class="caps">Title</label><input id="f-title" type="text" placeholder="What is this?" value="' + titleVal + '"></div>'
+    + '<div class="form-field span2"><label class="caps">Note (optional)</label><textarea id="f-note" rows="2" placeholder="A line on why it is worth reading">' + noteVal + "</textarea></div>"
+    + '<div class="form-field span2"><label class="caps">Tags</label><div class="tagpicker">' + pickerHtml + "</div>"
+    + '<div class="newtag-row"><input id="f-newtag" type="text" placeholder="Create a new tag…"><button type="button" class="btn" id="f-newtag-add">Add tag</button></div>'
+    + "</div>"
+    + "</div>"
+    + '<div class="form-actions"><button type="button" class="btn" id="f-cancel">Discard</button><button type="button" class="btn primary" id="f-save">' + (editing ? "Save changes" : "Submit link") + "</button></div>"
+    + "</div>";
+}
+
+function renderApp(state, ui) {
+  const list = filteredLinks(state, ui);
+  const hasFilter = ui.query.trim() !== "" || ui.activeTags.size > 0;
+  const showingGrid = hasFilter || ui.showArchive || ui.manage;
+  const codes = sectorCodes(state);
+  let gridHtml;
+  if (!showingGrid) {
+    gridHtml = '<div class="archive-prompt"><button type="button" class="archive-link" data-archive-toggle="1">See full archive (' + state.links.length + ')</button></div>';
+  } else if (list.length) {
+    gridHtml = list.map(function (l) { return renderCard(l, ui, codes, state.links); }).join("");
+  } else {
+    gridHtml = '<div class="empty-state">No sheets match this query.' + (hasFilter ? ' <button type="button" class="clear-link" id="clear-filters-2">Clear filters</button>' : "") + "</div>";
+  }
+
+  const statusRow = READ_ONLY
+    ? '<div class="tb-row status-ro"><span>ACCESS</span><b>READ-ONLY</b></div>'
+    : '<div class="tb-row status-live"><span>ACCESS</span><b>EDITABLE</b></div>';
+
+  return '<div class="sheet">'
+    + '<span class="reg reg-tl"></span><span class="reg reg-tr"></span><span class="reg reg-bl"></span><span class="reg reg-br"></span>'
+    + '<div class="header">'
+    + '<div><p class="kicker caps">master index — searchable link library</p><h1 class="brand">FUTURE LINKS</h1>'
+    + '<p class="tagline">A shared stash of links for the course. Search by inputting your own search term or filter by tag.</p></div>'
+    + '<div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px;">'
+    + '<div class="readout"><div>SHEET 1/1 · REV ' + pad2(state.rev) + "</div><div>PLOTTED " + todayStamp() + "</div></div>"
+    + '<button type="button" class="manage-btn caps' + (ui.manage ? " is-on" : "") + '" id="manage-toggle">' + (ui.manage ? "Done" : "Submit") + "</button>"
+    + "</div>"
+    + "</div>"
+    + (ui.manage ? '<div style="margin-bottom:14px;"><button type="button" class="btn primary caps" id="add-open">+ New submission</button></div>' : "")
+    + (ui.formMode ? renderForm(state, ui) : "")
+    + '<div class="searchwrap frame"><p class="field-label caps">query</p><input id="q" class="search-input" type="text" placeholder="Search titles, notes, tags…" value="' + esc(ui.query) + '" autocomplete="off"></div>'
+    + (showingGrid
+        ? '<div class="meta-row"><span>' + list.length + " OF " + state.links.length + " SHEETS SHOWN" + "</span>"
+          + (hasFilter ? '<button type="button" class="clear-link" id="clear-filters">Clear filters</button>' : (ui.manage ? "" : '<button type="button" class="archive-link" data-archive-toggle="1">Hide full archive</button>'))
+          + "</div>"
+        : "")
+    + '<div class="legend frame"><p class="field-label caps">legend — click a tag to filter</p><div class="tagshelf">' + renderTagShelf(state, ui) + "</div></div>"
+    + '<div class="grid">' + gridHtml + "</div>"
+    + '<div class="titleblock frame">'
+    + '<div class="tb-name">FUTURE LINKS — LINK INDEX</div>'
+    + '<div class="tb-row"><span>TAGS</span><b>' + state.tags.length + '</b></div>'
+    + '<div class="tb-row"><span>SHEETS</span><b>' + state.links.length + '</b></div>'
+    + statusRow
+    + "</div>"
+    + '<footer class="site-credit">Built by <a href="https://jackabraham.studio" target="_blank" rel="noopener">Jack Abraham</a><span class="credit-sep">&middot;</span><a href="https://github.com/Jackalackalack" target="_blank" rel="noopener">GitHub</a><span class="credit-sep">&middot;</span><a href="https://www.linkedin.com/in/jackcabraham/" target="_blank" rel="noopener">LinkedIn</a></footer>'
+    + "</div>";
+}
+
+let toastTimer = null;
+function showToast(msg, type) {
+  const el = document.getElementById("toast");
+  if (!el) return;
+  el.textContent = msg;
+  el.className = "toast" + (type === "error" ? " error" : "");
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { el.hidden = true; }, 3200);
+}
+
+function rerender() {
+  const app = document.getElementById("app");
+  const active = document.activeElement;
+  const isSearch = active && active.id === "q";
+  const selStart = isSearch ? active.selectionStart : null;
+  const selEnd = isSearch ? active.selectionEnd : null;
+  app.innerHTML = renderApp(STATE, UI);
+  bind();
+  if (isSearch) {
+    const el = document.getElementById("q");
+    if (el) { el.focus(); try { el.setSelectionRange(selStart, selEnd); } catch (e) {} }
+  }
+}
+
+function toggleSetVal(set, val) {
+  if (set.has(val)) set.delete(val); else set.add(val);
+}
+
+function proceedManageToggle() {
+  UI.manage = !UI.manage;
+  if (UI.manage) {
+    UI.formMode = "add"; UI.editingId = null; UI.formTagSel = new Set();
+    UI.formDraft = { url: "", title: "", note: "" };
+  } else {
+    UI.formMode = null;
+  }
+  rerender();
+}
+
+function openGate(onSuccess) {
+  const gate = document.getElementById("gate");
+  const input = document.getElementById("gate-input");
+  const err = document.getElementById("gate-error");
+  if (!gate || !input) { onSuccess(); return; }
+  gate.hidden = false;
+  if (err) err.hidden = true;
+  input.value = "";
+  gate._onSuccess = onSuccess;
+  setTimeout(function () { input.focus(); }, 30);
+}
+
+function bind() {
+  const app = document.getElementById("app");
+
+  const q = document.getElementById("q");
+  if (q) q.addEventListener("input", function () { UI.query = q.value; rerender(); });
+
+  app.querySelectorAll("[data-tag]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      toggleSetVal(UI.activeTags, btn.getAttribute("data-tag"));
+      rerender();
+    });
+  });
+
+  ["clear-filters", "clear-filters-2"].forEach(function (id) {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("click", function () { UI.query = ""; UI.activeTags = new Set(); rerender(); });
+  });
+
+  app.querySelectorAll("[data-archive-toggle]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      UI.showArchive = !UI.showArchive;
+      rerender();
+    });
+  });
+
+  const manageToggle = document.getElementById("manage-toggle");
+  if (manageToggle) manageToggle.addEventListener("click", function () {
+    if (STATIC_MIRROR) {
+      showToast("This is a static, read-only mirror — add or edit links on the live Claude version instead.", "error");
+      return;
+    }
+    if (!UI.manage && !UNLOCKED) {
+      openGate(proceedManageToggle);
+      return;
+    }
+    proceedManageToggle();
+  });
+
+  const addOpen = document.getElementById("add-open");
+  if (addOpen) addOpen.addEventListener("click", function () {
+    UI.formMode = "add"; UI.editingId = null; UI.formTagSel = new Set();
+    UI.formDraft = { url: "", title: "", note: "" };
+    rerender();
+  });
+
+  app.querySelectorAll("[data-edit]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      const id = btn.getAttribute("data-edit");
+      const link = STATE.links.find(function (l) { return l.id === id; });
+      UI.formMode = "edit"; UI.editingId = id; UI.formTagSel = new Set(link ? link.tags : []);
+      UI.formDraft = { url: link ? link.url : "", title: link ? link.title : "", note: link ? (link.note || "") : "" };
+      rerender();
+    });
+  });
+
+  app.querySelectorAll("[data-delete]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      const id = btn.getAttribute("data-delete");
+      const link = STATE.links.find(function (l) { return l.id === id; });
+      if (!link) return;
+      if (!window.confirm('Delete "' + link.title + '"?')) return;
+      STATE.links = STATE.links.filter(function (l) { return l.id !== id; });
+      STATE.rev += 1;
+      rerender();
+      persist();
+    });
+  });
+
+  app.querySelectorAll("[data-formtag]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      toggleSetVal(UI.formTagSel, btn.getAttribute("data-formtag"));
+      rerender();
+    });
+  });
+
+  app.querySelectorAll("[data-jumpto]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      const id = btn.getAttribute("data-jumpto");
+      const link = STATE.links.find(function (l) { return l.id === id; });
+      if (!link) return;
+      UI.query = link.title;
+      UI.activeTags = new Set();
+      rerender();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+
+  const fUrl = document.getElementById("f-url");
+  const fTitle = document.getElementById("f-title");
+  const fNote = document.getElementById("f-note");
+  if (fUrl) fUrl.addEventListener("input", function () { UI.formDraft.url = fUrl.value; });
+  if (fTitle) fTitle.addEventListener("input", function () { UI.formDraft.title = fTitle.value; });
+  if (fNote) fNote.addEventListener("input", function () { UI.formDraft.note = fNote.value; });
+
+  const newTagAdd = document.getElementById("f-newtag-add");
+  const newTagInput = document.getElementById("f-newtag");
+  function addDraftTag() {
+    if (!newTagInput) return;
+    const raw = newTagInput.value.trim();
+    if (!raw) return;
+    const existing = STATE.tags.find(function (t) { return t.toLowerCase() === raw.toLowerCase(); });
+    const finalTag = existing || raw;
+    if (!existing) { STATE.tags.push(finalTag); }
+    UI.formTagSel.add(finalTag);
+    rerender();
+  }
+  if (newTagAdd) newTagAdd.addEventListener("click", addDraftTag);
+  if (newTagInput) newTagInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); addDraftTag(); }
+  });
+
+  const cancelBtn = document.getElementById("f-cancel");
+  if (cancelBtn) cancelBtn.addEventListener("click", function () {
+    UI.formMode = null; UI.editingId = null; rerender();
+  });
+
+  const saveBtn = document.getElementById("f-save");
+  if (saveBtn) saveBtn.addEventListener("click", saveLink);
+}
+
+function saveLink() {
+  const urlField = document.getElementById("f-url");
+  const titleField = document.getElementById("f-title");
+  const noteField = document.getElementById("f-note");
+  const url = urlField ? urlField.value.trim() : "";
+  const title = titleField ? titleField.value.trim() : "";
+  const note = noteField ? noteField.value.trim() : "";
+  if (!url || !title) { showToast("A link needs at least a URL and a title.", "error"); return; }
+  let normalizedUrl = url;
+  if (!/^https?:\/\//i.test(normalizedUrl)) normalizedUrl = "https://" + normalizedUrl;
+  const tags = Array.from(UI.formTagSel);
+  const now = new Date().toISOString().slice(0, 10);
+
+  if (UI.formMode === "edit" && UI.editingId) {
+    const link = STATE.links.find(function (l) { return l.id === UI.editingId; });
+    if (link) { link.url = normalizedUrl; link.title = title; link.note = note; link.tags = tags; }
+  } else {
+    STATE.links.unshift({
+      id: "l" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      url: normalizedUrl, title: title, note: note, tags: tags, added: now
+    });
+  }
+  STATE.rev += 1;
+  UI.formMode = null; UI.editingId = null;
+  rerender();
+  persist();
+}
+
+function buildFullDocument() {
+  const styleEl = document.getElementById("app-style");
+  const cssText = styleEl ? styleEl.textContent : "";
+  const stateJson = JSON.stringify(STATE).replace(/</g, "\\u003c");
+  const newScript = __SRC__.replace(
+    /\/\*STATE_START\*\/[\s\S]*?\/\*STATE_END\*\//,
+    "/*STATE_START*/\nlet STATE = " + stateJson + ";\n/*STATE_END*/"
+  );
+  const creatorHtml = '<button type="button" id="creatorTagBtn" class="creator-tag" aria-expanded="false" aria-controls="creatorPanel">About the creator</button>'
+    + '<div class="creator-panel" id="creatorPanel" aria-hidden="true">'
+    + '<button type="button" class="creator-panel-close" id="creatorPanelClose" aria-label="Close">&times;</button>'
+    + '<div class="creator-avatar">JA</div>'
+    + '<div class="creator-name">Jack Abraham</div>'
+    + '<div class="creator-title">Music Consultant, Educator &amp; Mentor</div>'
+    + '<p class="creator-blurb">If you\'re enjoying this tool, drop me a line.</p>'
+    + '<div class="creator-links">'
+    + '<a class="creator-link-btn" href="mailto:jack@jackabraham.studio">Email me</a>'
+    + '<div class="creator-social-row">'
+    + '<a class="creator-social" href="https://www.linkedin.com/in/jackcabraham/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>'
+    + '<a class="creator-social" href="https://github.com/Jackalackalack" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"></path></svg></a>'
+    + '<a class="creator-social" href="https://jackabraham.studio" target="_blank" rel="noopener" aria-label="Website"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></a>'
+    + '<a class="creator-social" href="https://www.instagram.com/jackalackalack/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line></svg></a>'
+    + "</div></div></div>";
+  const gateHtml = '<div id="gate" class="gate" hidden>'
+    + '<div class="gate-box frame">'
+    + '<p class="field-label caps">owner passphrase</p>'
+    + '<input id="gate-input" type="password" placeholder="Enter passphrase" autocomplete="off">'
+    + '<p id="gate-error" class="gate-error" hidden>Incorrect passphrase.</p>'
+    + '<div class="gate-actions"><button type="button" class="btn" id="gate-cancel">Cancel</button><button type="button" class="btn primary" id="gate-ok">Unlock</button></div>'
+    + "</div></div>";
+  return "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>Future Links</title>\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"stylesheet\" href=\"" + FONT_HREF + "\">\n<style id=\"app-style\">" + cssText + "<\/style>\n</head>\n<body>\n<div class=\"ruler-top\"></div>\n<div class=\"ruler-left\"></div>\n<div id=\"app\"></div>\n<div id=\"toast\" class=\"toast\" hidden></div>\n" + creatorHtml + "\n" + gateHtml + "\n<script>" + newScript + "<\/script>\n</body>\n</html>";
+}
+
+async function persist() {
+  if (READ_ONLY) return;
+  const api = await getArtifactApi();
+  if (!api) return;
+  try {
+    await api.publish(buildFullDocument());
+    showToast("Saved");
+  } catch (err) {
+    const code = err && err.code;
+    if (code === "not_writer" || code === "not_granted" || code === "consent_required") {
+      READ_ONLY = true;
+      UI.manage = false; UI.formMode = null;
+      rerender();
+      showToast("You're viewing in read-only mode — ask the page owner to add or edit links.", "error");
+    } else if (code === "conflict") {
+      showToast("Updated elsewhere — refreshing…");
+    } else if (code === "too_large") {
+      showToast("This index is too large to save more — remove a few links first.", "error");
+    } else {
+      showToast("Could not save — try again in a moment.", "error");
+    }
+  }
+}
+
+rerender();
+
+(function () {
+  const btn = document.getElementById("creatorTagBtn");
+  const panel = document.getElementById("creatorPanel");
+  const closeBtn = document.getElementById("creatorPanelClose");
+  if (!btn || !panel || !closeBtn) return;
+  function setOpen(open) {
+    panel.classList.toggle("open", open);
+    panel.setAttribute("aria-hidden", String(!open));
+    btn.setAttribute("aria-expanded", String(open));
+  }
+  btn.addEventListener("click", function () { setOpen(!panel.classList.contains("open")); });
+  closeBtn.addEventListener("click", function () { setOpen(false); });
+  document.addEventListener("click", function (e) {
+    if (panel.classList.contains("open") && !panel.contains(e.target) && e.target !== btn) setOpen(false);
+  });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") setOpen(false); });
+})();
+
+(function () {
+  const gate = document.getElementById("gate");
+  const input = document.getElementById("gate-input");
+  const err = document.getElementById("gate-error");
+  const okBtn = document.getElementById("gate-ok");
+  const cancelBtn = document.getElementById("gate-cancel");
+  if (!gate || !input || !okBtn || !cancelBtn) return;
+  function attempt() {
+    if (input.value === PASSPHRASE) {
+      UNLOCKED = true;
+      try { localStorage.setItem("crateUnlocked", "1"); } catch (e) {}
+      const cb = gate._onSuccess;
+      gate.hidden = true;
+      if (cb) cb();
+    } else {
+      if (err) err.hidden = false;
+      input.value = "";
+      input.focus();
+    }
+  }
+  okBtn.addEventListener("click", attempt);
+  cancelBtn.addEventListener("click", function () { gate.hidden = true; });
+  input.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); attempt(); } });
+  gate.addEventListener("click", function (e) { if (e.target === gate) gate.hidden = true; });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !gate.hidden) gate.hidden = true; });
+})();
+</script>
